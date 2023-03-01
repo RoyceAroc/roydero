@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+    <script src="https://cdn.jsdelivr.net/gh/tanaikech/GetAccessTokenFromServiceAccount_js@master/getaccesstokengromserviceaccount_js.min.js"></script>
+    <script src="https://apis.google.com/js/client.js?onload=loadSheetsAPI"></script>
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+    <body>
+        <!-- Update attendance -->
+
+        <b> How to use - Steps: </b><br>
+        1. Share the Google Sheets Responses to Attendance Submissions with roydero@roydero-32a7b.iam.gserviceaccount.com <br>
+        2. Paste the url link to the spreadsheet in the box below. <br>
+        3. Click on 'Get Attendance Data'. Wait for a few seconds for it to fetch.<br>
+        4. Check the output to make sure that the data matches the spreadsheet. <br>
+        (The 'Update Hour Log With Attendance Section' now appears if everything worked thus far) <br>
+        5. Enter the column alphabet name (Ex: A, AH, AA, etc) that needs to be updated for attendance.  <br>
+        6. Click on 'Update Hour Log with Attendance' <br>
+        7. Check back on the hour log to make sure everything was updated properly. Revert changes as necessary by going back in history if anything gets messed up somehow. <br>
+        8. Any issues that the program was unable to manually update hours for will be listed if there are any.. <br>
+
+       <br>
+       <b>Software:</b> <br>
+        Attendance Responses Spreadsheet URL: <input type="text" id="url_attendance"> <button onclick="check_url()">Get Attendance Data</button><br>
+        <br>
+        <div style="display: none;" id="output_b">
+            <b> Update Hour Log with Attendance: </b><br>
+            
+            <u>Seniors:</u> <br>
+            What attendance column is to be updated? (Ex: AH) <input type="text" id="attendance_months_s"></input>
+            <button onclick="update_s()"> Update Hour Log with Attendance </button>
+            <br>
+            <b> Issues: </b>
+            <p id="issues"></p>
+            <u>Juniors:</u> <br>
+            What attendance column is to be updated? (Ex: AA) <input type="text" id="attendance_months_j"></input>
+            <button onclick="update_j()"> Update Hour Log with Attendance </button>
+            <br>
+            <b> Issues: </b>
+            <p id="issues_j"></p>
+        </div>
+
+        <b>Output:</b>
+        <br>
+        <p id="output_a"></p>
+        <script>
+            const object = {
+            private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC5ZfkzoKk9cTKm\nZhqIvdJlf20mo/cWDmiazGggUIB78VOUs0qEHbaqgbj+fgOM0SlNtCbl0uUmmapI\nM0FQz+87d5+4CJKsCu0jg129tKyMQjebmOfA09ruoGKa5o7cGsPyHpJFLkNEniBY\nEi3sGjczXvhEluUR43hms/9NYKS9ursk0sIEooEpLptoFgqbInMnkfdkFIqJug7u\nFOPvfyLxE8k7acZb/cxUoXNaKxbGb121r1Eqjz+hVHGQkznhfI6Dkd1pyJswuW8E\np/X1JJpwiclh0s54kNEBSrEG52fRkCX28EZrT+9vvZ3taI8GwNXR2nUb6G1U/m6s\n2YC30rMZAgMBAAECggEAAdppgVuwWAyhsrpFDCEHnBudYfGUIUc6F51bnMJpPQlB\nFQoDa0AnyLBcwsXML8lnG197CbjlW6Yqu/zagN4J4w3eTcGKLnLlLWxypgLgZv4s\nyPRK5r7HYAjANjz/6GZ9FxZj+byNZWobjSh7XIeOOIgmZ6XG0Dpg7vfgIVbKDBpw\nHvubUx57w//OxwFZ15/AtlxB0yRjUEKUFLDlla8jDEPZAo/fVr12TOYkatcPjVmw\n95ViOqCVLd2yskJJ6/YKnI6ZaZ6nGqj7zuOVrwX7owCSXUl1Ov42PjNjAnBx1Axb\ncr0gFL7GzXTQ2JdyBw/KoXZ3ZoaR3EQuVS6/9A+t7QKBgQDafXFeibbNby4voZPQ\n2D5W+LezDPi67qNofGKKk8bPLTErevp0Kp5OYfE2Gnvy00RDik48BfhK0ESAGZXo\nrutX8jnrQqJRdGnIRT4P0pUs+KDwXAVlPoAV9/qbU8OHSxPxMsC2JDhcpFG718Rm\nt2REtLa8y/U1AyeOrrMa43KZnQKBgQDZOinPDfcc0sFto75N1OU3VM3BI6tQNy+o\nY/ZvJVBJUTqqGMyg3EqJTXjJSesail/Eckz/Ynki8yyTqNIxzdsC8eqiYPYAy8+M\nvqyIZp9z22oWqO3Op+60bVZBV0HdAtBsOJR1M3IFyo+etZ73Klb88AfMovB/FYs3\n6J/Qr9E0rQKBgBpS8s3JGdU2iAIFHaIT667e2IMiFPWwus9j7Rt1IobjkwECGBrW\n56vZ8Q3rsvNWsOrSRwrETV32KcqlSoJ2ULSP4pqNtLDLrdMLRKbzYDXC3uEWtS+1\nkAkVj4QXW395dDWjP8SyKHhA8/gFzwvxHIuKmlm02R5B+wod0kZzEOOhAoGAGsB9\n+6DlqOgPqDf9LMqmO+02ta114JgbR2qgI8n9nDnjtqT9NmZKy6P91xRCXu9hoejN\nsLno3zQBbmHhGP8YFMHEOqEkSq7O7a9hwh6ZToRcCVRejQ/DZvb8I2nik5xQHLPP\nHKvsQ+hRTaNiY2AUfGv3Ge2LHquBjK4aWHH+mrUCgYEArsxgc9Y0hJ6ghO02ekiU\nPLYQAR6TVAwX7PAfUZXOzBzwgd8l8HaCscByKcjtI4rz/V/FJlGo2ZhFTMVFYOob\ne6+9xXMEzEDyR7DCEySHJOWUA73WewG3traHERakIa8l8gThVguKmI6yuxqVpZR/\ngAB5VEyoHzh8N55RTLADVtk=\n-----END PRIVATE KEY-----\n",
+            client_email: "roydero@roydero-32a7b.iam.gserviceaccount.com",
+            scopes: ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/spreadsheets.readonly"],
+        };
+        const handleClientLoad = () => gapi.load("client", async () => gapi.auth.setToken(await GetAccessTokenFromServiceAccount.do(object)));
+           var g = [];
+           var k = [];
+            function update_s() {
+                /* Seniors */
+                let h = [];
+                for(let i=254; i<=484; ++i) {
+                    if(g.includes(i.toString())) {
+                        h.push(['0']);
+                        k.push(i.toString());
+                    } else {
+                        h.push(['-2']);
+                    }
+                }
+                for(let m=0; m<g.length; m++) {
+                    if(!k.includes(g[m].toString()) && !g[m].toString().includes("24-")) {
+                        document.getElementById("issues").innerHTML += `Member ID Issue: Attendance for ${g[m]} must be updated manually. This is since the ID format is not recognized by the software. <br>`; 
+                    }
+                } 
+                console.log(h);
+                let mk = document.getElementById("attendance_months_s").value;
+                var range = `SENIORS!${mk}8:${mk}`; 
+                gapi.client.init({
+                        apiKey: "AIzaSyB48YbAWdFssJlxV3tsoVCaJBdjscwxXWg",
+                        discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+                    }).then(async () => {
+                        gapi.client.sheets.spreadsheets.values.update({
+                                spreadsheetId: "1BGW-psK2X-I0qX0QCjHq4zPodg40ekQFteVPwQRZSs0",
+                                range: range,
+                                values: h,
+                                valueInputOption: 'USER_ENTERED'
+                            }).then(async function(response) {
+                            console.log(response);
+                        });
+                    });
+            }
+
+            function update_j() {
+                /* Juniors */
+                let h = [];
+                for(let i=1; i<=211; ++i) {
+                    if(g.includes("24-" + i.toString())) {
+                        h.push(['0']);
+                        k.push("24-" + i.toString());
+                    } else {
+                        h.push(['-2']);
+                    }
+                }
+                for(let m=0; m<g.length; m++) {
+                    try {
+                        if(!k.includes(g[m].toString()) && (parseInt(g[m]) < 254 || parseInt(g[m]) > 484)) {
+                        document.getElementById("issues_j").innerHTML += `Member ID Issue: Attendance for ${g[m]} must be updated manually. This is since the ID format is not recognized by the software. <br>`; 
+                     }
+                    } catch(e) {
+
+                    }
+                   
+                } 
+                console.log(h);
+                let mk = document.getElementById("attendance_months_j").value;
+                var range = `JUNIORS!${mk}7:${mk}`; 
+                gapi.client.init({
+                        apiKey: "AIzaSyB48YbAWdFssJlxV3tsoVCaJBdjscwxXWg",
+                        discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+                    }).then(async () => {
+                        gapi.client.sheets.spreadsheets.values.update({
+                                spreadsheetId: "1BGW-psK2X-I0qX0QCjHq4zPodg40ekQFteVPwQRZSs0",
+                                range: range,
+                                values: h,
+                                valueInputOption: 'USER_ENTERED'
+                            }).then(async function(response) {
+                            console.log(response);
+                        });
+                    });
+            }
+
+            function check_url() {
+                try {
+                    let urlString = document.getElementById("url_attendance").value;
+                    const regex = /\/d\/(.+?)\//;
+                    const match = urlString.match(regex);
+                    const id = match[1];
+                    
+                    var range = '!A1:ZZ';
+                    gapi.client.init({
+                        apiKey: "AIzaSyB48YbAWdFssJlxV3tsoVCaJBdjscwxXWg",
+                        discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+                    }).then(async () => {
+                        gapi.client.sheets.spreadsheets.values.get({
+                            spreadsheetId: id,
+                            range: range
+                        }).then(async function(response) {
+                            for(let i=1; i<response.result.values.length; i++) {
+                                let b = response.result.values;
+                                let c = b[i][1].replace('#', '');
+                                g.push(c);
+                                document.getElementById("output_a").innerHTML += 
+                                `
+                                <b> NHS Number: </b> ${c} <b> Name: </b> ${b[i][3]} ${b[i][2]} <b> Grade: </b>${b[i][5]} <br>
+                                `;
+                
+                            }
+                            
+                            /* Update Hour Log section */
+                            document.getElementById("output_b").style.display = "block";
+                        });
+                    });
+                } catch(e) {
+                    document.getElementById("output_a").innerHTML = "This URL did not work. Please make sure to follow all steps."
+                }
+          
+            }
+        </script>
+    </body>
+</html>
