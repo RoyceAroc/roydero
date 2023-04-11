@@ -73,11 +73,11 @@
                 discoveryDocs: ["https://slides.googleapis.com/$discovery/rest?version=v1", ],
             }).then(async () => {
                 var slides = await gapi.client.slides.presentations.get({
-                    presentationId: '1rJrEBN8iW-GniGjXq4xFs7PwaFPqUActCsLzPsKQh2w'
+                    presentationId: '16TgmeF9MXW0s9xHUNrDRsq3vZPD7EywdRXn_ujoeyRw'
                 });
                 for (let i = 0; i < slides.result.slides.length; i++) {
                     var as = await gapi.client.slides.presentations.pages.getThumbnail({
-                        presentationId: '1rJrEBN8iW-GniGjXq4xFs7PwaFPqUActCsLzPsKQh2w',
+                        presentationId: '16TgmeF9MXW0s9xHUNrDRsq3vZPD7EywdRXn_ujoeyRw',
                         pageObjectId: slides.result.slides[i].objectId
                     });
                     let blob = await fetch(as.result.contentUrl).then(r => r.blob());
