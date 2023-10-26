@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Create a new project</h1>
+    <p>Enter Google Slides Link Below:</p>
+    <script src="https://cdn.jsdelivr.net/gh/tanaikech/GetAccessTokenFromServiceAccount_js@master/getaccesstokengromserviceaccount_js.min.js"></script>
+    <script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};handleClientLoad()" onreadystatechange="if (this.readyState === 'complete') this.onload()"></script>
+    <form id="linkForm">
+        <input type="text" id="googleDocsLink" placeholder="Enter Google Slides Link">
+        <button type="button" id="continueButton">Continue</button>
+    </form>
+
+    <div id="result" style="display: none;">
+        <p> <span id="output"></span></p>
+    </div>
+    <script>
+      
+        var projCode;
+        
+  
+        let slideImages = []; let slideRecordings = [];
+          const object = {
+              private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC5ZfkzoKk9cTKm\nZhqIvdJlf20mo/cWDmiazGggUIB78VOUs0qEHbaqgbj+fgOM0SlNtCbl0uUmmapI\nM0FQz+87d5+4CJKsCu0jg129tKyMQjebmOfA09ruoGKa5o7cGsPyHpJFLkNEniBY\nEi3sGjczXvhEluUR43hms/9NYKS9ursk0sIEooEpLptoFgqbInMnkfdkFIqJug7u\nFOPvfyLxE8k7acZb/cxUoXNaKxbGb121r1Eqjz+hVHGQkznhfI6Dkd1pyJswuW8E\np/X1JJpwiclh0s54kNEBSrEG52fRkCX28EZrT+9vvZ3taI8GwNXR2nUb6G1U/m6s\n2YC30rMZAgMBAAECggEAAdppgVuwWAyhsrpFDCEHnBudYfGUIUc6F51bnMJpPQlB\nFQoDa0AnyLBcwsXML8lnG197CbjlW6Yqu/zagN4J4w3eTcGKLnLlLWxypgLgZv4s\nyPRK5r7HYAjANjz/6GZ9FxZj+byNZWobjSh7XIeOOIgmZ6XG0Dpg7vfgIVbKDBpw\nHvubUx57w//OxwFZ15/AtlxB0yRjUEKUFLDlla8jDEPZAo/fVr12TOYkatcPjVmw\n95ViOqCVLd2yskJJ6/YKnI6ZaZ6nGqj7zuOVrwX7owCSXUl1Ov42PjNjAnBx1Axb\ncr0gFL7GzXTQ2JdyBw/KoXZ3ZoaR3EQuVS6/9A+t7QKBgQDafXFeibbNby4voZPQ\n2D5W+LezDPi67qNofGKKk8bPLTErevp0Kp5OYfE2Gnvy00RDik48BfhK0ESAGZXo\nrutX8jnrQqJRdGnIRT4P0pUs+KDwXAVlPoAV9/qbU8OHSxPxMsC2JDhcpFG718Rm\nt2REtLa8y/U1AyeOrrMa43KZnQKBgQDZOinPDfcc0sFto75N1OU3VM3BI6tQNy+o\nY/ZvJVBJUTqqGMyg3EqJTXjJSesail/Eckz/Ynki8yyTqNIxzdsC8eqiYPYAy8+M\nvqyIZp9z22oWqO3Op+60bVZBV0HdAtBsOJR1M3IFyo+etZ73Klb88AfMovB/FYs3\n6J/Qr9E0rQKBgBpS8s3JGdU2iAIFHaIT667e2IMiFPWwus9j7Rt1IobjkwECGBrW\n56vZ8Q3rsvNWsOrSRwrETV32KcqlSoJ2ULSP4pqNtLDLrdMLRKbzYDXC3uEWtS+1\nkAkVj4QXW395dDWjP8SyKHhA8/gFzwvxHIuKmlm02R5B+wod0kZzEOOhAoGAGsB9\n+6DlqOgPqDf9LMqmO+02ta114JgbR2qgI8n9nDnjtqT9NmZKy6P91xRCXu9hoejN\nsLno3zQBbmHhGP8YFMHEOqEkSq7O7a9hwh6ZToRcCVRejQ/DZvb8I2nik5xQHLPP\nHKvsQ+hRTaNiY2AUfGv3Ge2LHquBjK4aWHH+mrUCgYEArsxgc9Y0hJ6ghO02ekiU\nPLYQAR6TVAwX7PAfUZXOzBzwgd8l8HaCscByKcjtI4rz/V/FJlGo2ZhFTMVFYOob\ne6+9xXMEzEDyR7DCEySHJOWUA73WewG3traHERakIa8l8gThVguKmI6yuxqVpZR/\ngAB5VEyoHzh8N55RTLADVtk=\n-----END PRIVATE KEY-----\n",
+              client_email: "roydero@roydero-32a7b.iam.gserviceaccount.com",
+              scopes: ["https://www.googleapis.com/auth/presentations.readonly"],
+          };
+          const handleClientLoad = () => gapi.load("client", async () => gapi.auth.setToken(await GetAccessTokenFromServiceAccount.do(object)));
+      </script>
+      <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+      <script src="assets/js/firebase.js"></script>
+
+    <script>
+        document.getElementById("continueButton").addEventListener("click", function() {
+            document.getElementById("result").style.display = "none";
+            var inputLink = document.getElementById("googleDocsLink").value;
+            var parsedId = parseGoogleDocsLink(inputLink);
+            
+
+          gapi.client.init({
+                discoveryDocs: ["https://slides.googleapis.com/$discovery/rest?version=v1", ],
+            }).then(async () => {
+                try {
+                    var slides = await gapi.client.slides.presentations.get({
+                        presentationId: parsedId
+                     });
+                     document.getElementById("output").textContent = "Creating project ... give it a few seconds and you will be transferred to a new page. Share that new page link with your teammates.";
+                    document.getElementById("result").style.display = "block";
+                    createProject(parsedId);
+                } catch(e) {
+                    document.getElementById("output").textContent = "Google Slides not found. Enable shared access permissions and try again.";
+                    document.getElementById("result").style.display = "block";
+                }
+                
+            });
+        });
+
+        function parseGoogleDocsLink(link) {
+            var startIndex = link.indexOf("/d/") + 3; 
+            var endIndex = link.indexOf("/", startIndex);
+            var docId = link.substring(startIndex, endIndex);
+            return docId;
+        }
+
+        function createProject(parsedId) {
+            const storageRef = firebase.storage().ref(`${parsedId}/slides`);
+            storageRef.listAll().then((listResults) => {
+                const promises = listResults.items.map((item) => {
+                    return item.delete();
+                });
+                Promise.all(promises);
+            });
+            gapi.client.init({
+                discoveryDocs: ["https://slides.googleapis.com/$discovery/rest?version=v1", ],
+            }).then(async () => {
+                var slides = await gapi.client.slides.presentations.get({
+                    presentationId: parsedId
+                });
+                for (let i = 0; i < slides.result.slides.length; i++) {
+                    var as = await gapi.client.slides.presentations.pages.getThumbnail({
+                        presentationId: parsedId,
+                        pageObjectId: slides.result.slides[i].objectId
+                    });
+                    let blob = await fetch(as.result.contentUrl).then(r => r.blob());
+                    var finishedFile = new File([blob], `${i}.JPG`, {
+                        type: "image/jpg"
+                    });
+                    var storage = firebase.storage().ref(`${parsedId}/slides/${i}.JPG`);
+                    //upload file
+                    var upload = storage.put(finishedFile);
+                }
+                window.location = "project.html?projectCode=" + parsedId;
+            });
+        }
+    </script>
+</body>
+</html>
